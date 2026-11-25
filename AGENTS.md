@@ -14,36 +14,47 @@ Three things are deliberately different from upstream:
 
 The author's name, handle, and bio stay as written (`poteto`, `https://x.com/poteto`, "at Cursor"). This is a fork, not a rebrand.
 
-## Branches
+## Branch and baseline
 
-| Branch     | Holds                                                             | Rule                                                            |
-| ---------- | ----------------------------------------------------------------- | --------------------------------------------------------------- |
-| `main`     | The fork. All work, adaptation, and docs land here.               | Commit here. This is the branch formerly called `pslim`.        |
-| `pstack`   | The upstream split at the last sync point, matching `cursor/plugins/pstack`. | Never commit. It is the merge base for the next sync. |
+There is one branch: `main`. The fork, the adaptations, and the docs all land here, and it is what `git clone` and `npx skills add shahrin014/pstack-slim` resolve to.
 
-Remotes: `origin` is `shahrin014/pstack-slim`, `upstream` is `cursor/plugins`. `refs/upstream/pstack` caches the latest split tip.
+The upstream baseline is a ref, not a branch. `refs/upstream/pstack` points at a commit whose tree is `cursor/plugins`'s `pstack/` directory at the last sync, laid out at this repo's root. It is the merge base for the next sync, and it cannot be checked out or committed to by accident.
+
+Remotes: `origin` is `shahrin014/pstack-slim`, `upstream` is `cursor/plugins`.
 
 ## Syncing upstream
 
-Run this from the repo root. A split needs the `pstack/` prefix in a worktree, so it is computed in a scratch clone:
+Run this from the repo root. It stages upstream's changes against the baseline in one merge, with no clone, no temp directory, and no history replay:
 
 ```bash
-tmp=$(mktemp -d)
-git clone -q https://github.com/cursor/plugins.git "$tmp/plugins"
-git -C "$tmp/plugins" subtree split -P pstack -b pstack-only
-git fetch "$tmp/plugins" pstack-only:refs/upstream/pstack
-rm -rf "$tmp"
+git fetch upstream main
 
-git merge refs/upstream/pstack
+if [ "$(git rev-parse refs/upstream/pstack^{tree})" != "$(git rev-parse upstream/main:pstack)" ]; then
+  snap=$(git commit-tree "$(git rev-parse upstream/main:pstack)" -p refs/upstream/pstack \
+    -m "chore: upstream pstack snapshot @ $(git rev-parse --short upstream/main)")
+  git merge --no-ff --no-commit "$snap"
+fi
 ```
 
-The merge brings in upstream pstack. It conflicts wherever upstream edited a path this fork renamed (`poteto-*` upstream, `pslim-*` here). Resolve by taking upstream's content at the `pslim-*` path, then re-applying the rules below.
-
-Only move the baseline when you want a new one:
+If nothing is staged, upstream has not moved. Otherwise resolve and adapt (below), then finish the merge and move the baseline:
 
 ```bash
-git branch -f pstack refs/upstream/pstack
+git commit
+git update-ref refs/upstream/pstack "$snap"
 ```
+
+Moving the baseline only after the adapted merge commits keeps the next sync's merge base correct. The merge conflicts wherever upstream edited a path this fork renamed (`poteto-*` upstream, `pslim-*` here): take upstream's content at the `pslim-*` path, then re-apply the rules below.
+
+`git subtree pull --prefix=pstack` does not apply, because the subtree sits at this repo's root. A plain `git merge upstream/main` would bring in every sibling plugin. `git merge -s subtree` cannot help either, because this history comes from a subtree split and shares no ancestors with upstream.
+
+A fresh clone does not carry the baseline ref. Recover it from the last sync merge:
+
+```bash
+merge=$(git log --merges --grep='^chore: sync upstream pstack' -1 --format=%H)
+git update-ref refs/upstream/pstack "$(git rev-parse "$merge^2^")"
+```
+
+Before any snapshot sync has happened, the baseline is the end of the imported upstream history, `3431628` in this repo.
 
 ## Adapting incoming changes (never skip)
 
@@ -65,7 +76,7 @@ chore: sync upstream pstack (<upstream sha>)
 <what changed> + how it was adapted
 ```
 
-Never commit adaptation work to `pstack`.
+Commit on `main`.
 
 ## Verify before commit
 
