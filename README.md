@@ -1,6 +1,6 @@
 # PSlim / PStack slim
-This is a git subtree of https://github.com/cursor/plugins/tree/main/pstack to still keep track of upstream changes, but trimmed down and standardized to be easily used by other AI Coding tools.
-Also, note that I have changed the poteto commands to pslim, to prevent conflicts with the original pstack and because ... There can ony be one [poteto](https://x.com/poteto) 🙇‍♂️
+This is a maintained fork of the [`pstack`](https://github.com/cursor/plugins/tree/main/pstack) plugin from `cursor/plugins`, extracted with `git subtree split` so the history is pstack's own. It tracks upstream through a baseline ref and snapshot merges (see [`AGENTS.md`](./AGENTS.md)), and moves the skills from Cursor-only tooling toward harness-neutral operations, with adapters for [OpenCode](./docs/harness/opencode.md) and [Claude Code](./docs/harness/claude-code.md). Adaptation is in progress: a few Cursor paths and features still remain.
+Also, note that I have changed the poteto commands to pslim, to prevent conflicts with the original pstack and because ... There can only be one [poteto](https://x.com/poteto) 🙇‍♂️
 
 # pstack
 
