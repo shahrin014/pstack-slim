@@ -66,7 +66,7 @@ Upstream changes arrive written for Cursor. Before committing a merge, walk this
 4. **Cursor-only features get a capability line.** Bugbot, Automations, Projects and cloud agents, Custom Modes, and `/loop` do not exist everywhere. Keep that behaviour behind the existing `Skipped in <harness>: <step>. <reason>.` convention.
 5. **Preserve what is genuinely Cursor's.** Product names, `cursor.com` and `api2.cursor.sh` URLs, `.cursor/...` paths that name real Cursor files, `endCursor` identifiers in `scripts/watch-pr/`, and the author's bio. Never blind-replace `cursor`.
 6. **Docs links in skills are absolute.** Skills install outside this repo, so repo-relative links (`../../docs/guide/...`) become `https://github.com/shahrin014/pstack-slim/blob/main/...`.
-7. **Update `docs/harness/`.** Every harness-specific mapping lives there. When a change adds a tool-dependent step, add its row for each supported harness. Supported harnesses today: OpenCode (primary; its adapter is still missing), Claude Code (`docs/harness/claude-code.md`), and Cursor as the upstream reference.
+7. **Update `docs/harness/`.** Every harness-specific mapping lives there. When a change adds a tool-dependent step, add its row for each supported harness. Supported harnesses today: OpenCode (primary, `docs/harness/opencode.md`), Claude Code (`docs/harness/claude-code.md`), and Cursor as the upstream reference.
 
 Commit the sync and the adaptation together on `main`, with the upstream commit named in the message:
 

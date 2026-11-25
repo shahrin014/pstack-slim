@@ -31,7 +31,7 @@ curl -fsSL https://raw.githubusercontent.com/shahrin014/pstack-slim/main/agents/
   > ~/.config/opencode/agents/pslim-agent.md
 ```
 
-OpenCode loads a skill by id rather than a slash command, so ask for `@pslim-mode` where Cursor takes `/pslim-mode`. Later, `npx skills update` moves the installed skills to newer commits.
+OpenCode loads a skill by id rather than a slash command, so ask for `@pslim-mode` where Cursor takes `/pslim-mode`. Later, `npx skills update` moves the installed skills to newer commits. The [OpenCode adapter](../harness/opencode.md) covers the other differences.
 
 ## Pick your models
 
