@@ -14,6 +14,25 @@ Cursor confirms the plugin is installed.
 
 In Claude Code, run `/plugin marketplace add cursor/plugins`, then `/plugin install pstack@cursor-plugins`. Claude Code prefixes plugin commands, so each command in this guide takes a `pstack:` prefix there, such as `/pstack:setup-pstack`, which writes its model rule to `~/.claude/rules/pstack-models.md`. The [Claude Code adapter](../harness/claude-code.md) covers the other differences.
 
+In OpenCode, install the skills with the [skills cli](https://skills.sh/docs/cli) (Node 22.20 or later). `-g` makes them available to every project; drop it to install into the current project's `.agents/skills/` instead:
+
+```bash
+npx skills add shahrin014/pstack-slim -a opencode -g --skill '*' -y
+```
+
+The CLI installs skills only. `pslim-mode` also delegates to a `pslim-agent` subagent, so install that too. OpenCode needs `mode: subagent`, and the Cursor model slug in the file is not valid there, so both get fixed on the way in:
+
+```bash
+mkdir -p ~/.config/opencode/agents
+curl -fsSL https://raw.githubusercontent.com/shahrin014/pstack-slim/main/agents/pslim-agent.md \
+  | sed -e 's/^is_background: true$/mode: subagent/' \
+        -e '/^model: /d' \
+        -e 's|~/.cursor/plugins/|~/.config/opencode/skills/|g' \
+  > ~/.config/opencode/agents/pslim-agent.md
+```
+
+OpenCode loads a skill by id rather than a slash command, so ask for `@pslim-mode` where Cursor takes `/pslim-mode`. Later, `npx skills update` moves the installed skills to newer commits.
+
 ## Pick your models
 
 Run:
@@ -29,6 +48,8 @@ The defaults are the same as the `large` budget. Code, prose, and judgment run o
 You only override what you care about. A role with no line in the rule keeps the skill's default. To restore a default, delete that role's line. A rerun of `/setup-pstack` keeps any role whose model differs from the default. When a default changes, a rule written before the change still pins the old default until you run `/setup-pstack` again. That run replaces the old defaults it recognizes, tells you which, and keeps your other choices. To drop a pin it does not recognize, delete that role's line or the file first.
 
 You might be wondering what happens if you use Auto. Set a role to `inherit-parent` or `auto` and pstack omits the subagent `model` field, so the subagent inherits your parent chat model. Both values mean the same thing, and neither is a model slug. For a panel role the value is a list, and one subagent runs per entry, so the list length sets the panel size. Setup also configures `swarm workers`, the default model for every `/swarm` worker unless a race names a model for each arm.
+
+On OpenCode, `/setup-pstack` does not apply. It writes Cursor's `~/.cursor/rules/pstack-models.mdc` and reasons in Cursor slugs, so set `model: <provider>/<model>#<variant>` on `pslim-agent` yourself, or leave the line off so the subagent inherits the chat's model. Steps that need Cursor-only tooling, such as bugbot, automations, cloud agents, and `/loop`, have no OpenCode equivalent.
 
 ## Accept the verification offers, or don't
 
@@ -49,18 +70,18 @@ pstack spends extra tokens on subagents and review panels. That's the price of t
 - Rerun `/setup-pstack` and pick a smaller reasoning budget or cheaper models. A strong model in the main chat with cheaper, faster models in the code roles is a good split.
 - Set a role to `auto` or `inherit-parent` so it runs on the chat's own model.
 - Shorten a panel list. Each entry runs one subagent.
-- Save `/poteto-mode` for work that needs rigor. A small, obvious edit doesn't.
+- Save `/pslim-mode` for work that needs rigor. A small, obvious edit doesn't.
 
 ## Run your first task
 
 Pick something real but small, and describe it the way you'd describe it to a colleague:
 
 ```text
-/poteto-mode add a --json flag to this command. text output stays byte-identical. verify both.
+/pslim-mode add a --json flag to this command. text output stays byte-identical. verify both.
 ```
 
 Watch the todo list. Its first items are the matched playbook's steps copied in, the Feature playbook for this prompt.
 
-From here you can type normal follow-ups. To keep `/poteto-mode` on for the whole chat, pick it from the `/` menu with Option+Enter (Mac) or Alt+Enter (Windows) instead of Enter. That makes it a [Custom Mode](https://cursor.com/docs/skills#using-a-skill-as-a-custom-mode), which stays in context on every turn until you exit it. Custom Modes are available in the Agents Window and the CLI. Plain Enter attaches the skill to one message, and it fades as the chat moves on.
+From here you can type normal follow-ups. To keep `/pslim-mode` on for the whole chat, pick it from the `/` menu with Option+Enter (Mac) or Alt+Enter (Windows) instead of Enter. That makes it a [Custom Mode](https://cursor.com/docs/skills#using-a-skill-as-a-custom-mode), which stays in context on every turn until you exit it. Custom Modes are available in the Agents Window and the CLI. Plain Enter attaches the skill to one message, and it fades as the chat moves on.
 
-Next: [Route work through `/poteto-mode`](./02-poteto-mode.md).
+Next: [Route work through `/pslim-mode`](./02-pslim-mode.md).
