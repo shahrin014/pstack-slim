@@ -8,11 +8,11 @@ i'm [poteto](https://x.com/poteto). i'm not a president or ceo, but i've worked 
 
 there's a growing sense that ai writes too much slop code. i agree. i don't want to ship like a team of twenty slop artists. throughput without quality is not a goal i aspire to. if you want to go fast, go deep first. 
 
-**pstack is my answer.** these are the same skills i use every day to ship high quality code at Cursor. this turns cursor into a real engineering team. the goal is not to maximize loc, in fact it's the opposite. pstack helps you write less, but higher quality code.
+**pstack is my answer.** these are the same skills i use every day to ship high quality code at Cursor. this turns your agent into a real engineering team. the goal is not to maximize loc, in fact it's the opposite. pstack helps you write less, but higher quality code.
 
 **pstack gives you fearless parallelism.** when you can go deep on one agent and trust it to write good, verifiable code, you can truly parallelize with confidence. start multiple agents up with `pslim-mode` and trust that they'll apply rigorous engineering principles to their work.
 
-**cursor gives you the best of all worlds.** every frontier model has its strengths and weaknesses. use any model with pstack. in fact, many of my skills use multi-model workflows to take advantage of each model's unique strengths.
+**your agent gives you the best of all worlds.** every frontier model has its strengths and weaknesses. use any model with pstack. in fact, many of my skills use multi-model workflows to take advantage of each model's unique strengths.
 
 fork it. improve it. make it yours. PRs are welcome! 
 
@@ -31,7 +31,7 @@ in claude code:
 
 claude code leaves auto-update off for third-party marketplaces, so pstack stays on the version you installed. to turn it on, run `/plugin`, open the **marketplaces** tab, select `cursor-plugins`, and choose **enable auto-update**. to update once by hand, run `claude plugin update pstack@cursor-plugins`.
 
-claude code prefixes plugin commands and agents, so `/pslim-mode` is `/pstack:pslim-mode`. the [claude code adapter](./docs/harness/claude-code.md) maps every other cursor name. in claude code, `/pstack:setup-pstack` writes your model choices to `~/.claude/rules/pstack-models.md`, and a step that needs a cursor-only feature, such as bugbot or automations, is skipped with a one-line note.
+claude code prefixes plugin commands and agents, so `/pslim-mode` is `/pstack:pslim-mode`. the [claude code adapter](./docs/harness/claude-code.md) maps every other Cursor name. in claude code, `/pstack:setup-pstack` writes your model choices to `~/.claude/rules/pstack-models.md`, and a step that needs a cursor-only feature, such as bugbot or automations, is skipped with a one-line note.
 
 claude code installs a generated copy of pstack, including this readme and the guide, from [`harness/pstack/`](https://github.com/cursor/plugins/tree/main/harness/pstack) at the repository root. after you change pstack, run `node scripts/generate-pstack-harness-trees.mjs` from the repository root and commit the result. ci fails while the generated copy is out of date.
 
@@ -52,13 +52,13 @@ two steps:
 
 new here? the [pstack guide](./docs/guide/README.md) walks you through a first real task, from setup and prompting through verification and overnight runs. stuck, or unsure which skill fits? ask [`/pslim-help`](./skills/pslim-help/SKILL.md).
 
-that's it. the other skills are situational, and the mode skill uses them for you as needed. out of the box, code delegates (feature, refactoring, bug fix, perf, hillclimb), prose, and judgment go to opus 5.5 at xhigh, and no role runs above xhigh. outside a review panel, fable 5.2 runs only when you name it or after two opus 5.5 runs of the same brief fail. the default panel is fable 5.2 / opus 5.5 / gemini 4 neon. [`/setup-pstack`](./skills/setup-pstack/SKILL.md) changes any of it.
+that's it. the other skills are situational, and the mode skill uses them for you as needed. out of the box, code delegates (feature, refactoring, bug fix, perf, hillclimb), prose, and judgment go to opus 5.5 at its top reasoning level, and no role runs above that. outside a review panel, fable 5.2 runs only when you name it or after two opus 5.5 runs of the same brief fail. the default panel is fable 5.2 / opus 5.5 / gemini 4 neon. [`/setup-pstack`](./skills/setup-pstack/SKILL.md) changes any of it.
 
 ## usage
 
 use [`/pslim-mode`](./skills/pslim-mode/SKILL.md) at the start of a task. it reads your request, picks from a set of playbooks, and runs the other skills as the steps need them.
 
-pick `/pslim-mode` from the `/` menu before you type your task, so cursor attaches the skill to the message.
+pick `/pslim-mode` from the `/` menu before you type your task, so the agent attaches the skill to the message.
 
 ### just use [`/pslim-mode`](./skills/pslim-mode/SKILL.md)
 
@@ -116,7 +116,7 @@ the full rules and playbooks live in [`skills/pslim-mode/SKILL.md`](./skills/psl
 
 to keep [`/pslim-mode`](./skills/pslim-mode/SKILL.md) on across turns, pick it from the `/` menu and press option+enter (mac) or alt+enter (windows) instead of enter. that makes it a [custom mode](https://cursor.com/docs/skills#using-a-skill-as-a-custom-mode), which cursor offers in the agents window and the cli. it stays in context every turn until you exit the mode. plain enter attaches it to one message only.
 
-[`/pslim-mode`](./skills/pslim-mode/SKILL.md) works extremely well with cursor's `/loop` command. you can make cursor work for many hours without sacrificing rigor.
+[`/pslim-mode`](./skills/pslim-mode/SKILL.md) works extremely well with cursor's `/loop` command. you can make the agent work for many hours without sacrificing rigor.
 
 ## skills
 
@@ -226,11 +226,11 @@ help:              /pslim-help which skill should i use to review this branch?
 
 [`/pslim-mode`](./skills/pslim-mode/SKILL.md) runs in the chat that receives it. that chat owns the playbook, the todo list, and every subagent spawn.
 
-pstack also ships [`subagent_type: "pslim-agent"`](./agents/pslim-agent.md) as the wrapper for delegates spawned during a run. it reads `pslim-mode` in full, including its inline principles index, before doing any work. substituting `generalPurpose` skips that read and drifts. do not spawn `pslim-agent` to run the playbook itself.
+pstack also ships the [`pslim-agent`](./agents/pslim-agent.md) subagent as the wrapper for delegates spawned during a run. it reads `pslim-mode` in full, including its inline principles index, before doing any work. substituting a general worker skips that read and drifts. do not spawn `pslim-agent` to run the playbook itself.
 
-[`/pslim-mode`](./skills/pslim-mode/SKILL.md) and [`subagent_type: "pslim-agent"`](./agents/pslim-agent.md) route through the same wrapper.
+[`/pslim-mode`](./skills/pslim-mode/SKILL.md) and the [`pslim-agent`](./agents/pslim-agent.md) subagent route through the same wrapper.
 
-pstack also ships [Comment Sicko](./agents/comment-sicko.md), a read-only comment reviewer available as `subagent_type: "comment-sicko"`. usually invoke it through [`/no-comments`](./skills/no-comments/SKILL.md), not directly.
+pstack also ships [Comment Sicko](./agents/comment-sicko.md), a read-only comment reviewer available as the `comment-sicko` subagent. usually invoke it through [`/no-comments`](./skills/no-comments/SKILL.md), not directly.
 
 ## principles
 

@@ -45,7 +45,7 @@ If cost is the worry, say where the tokens go and how to spend fewer. pstack spe
 
 pstack is built for Cursor, and it also installs in Claude Code with `/plugin marketplace add cursor/plugins`, then `/plugin install pstack@cursor-plugins`. There, each command takes a `pstack:` prefix, such as `/pstack:pslim-mode`. The [Claude Code adapter](https://github.com/shahrin014/pstack-slim/blob/main/docs/harness/claude-code.md) maps the Cursor names, and a step that needs a Cursor-only feature, such as Bugbot or Automations, is skipped with a one-line note.
 
-Other tools can read the skills, because they use the Agent Skills format. But most workflow skills, including `/pslim-mode`, `/how`, and `/teach`, spawn Cursor subagents, some with per-role models, and Custom Modes and `/loop` are Cursor features, so those parts may not work there.
+Other tools can read the skills, because they use the Agent Skills format. But most workflow skills, including `/pslim-mode`, `/how`, and `/teach`, spawn subagents, some with per-role models, and Custom Modes and `/loop` are Cursor features, so those parts may not work there.
 
 ## Start a task with `/pslim-mode`
 
@@ -57,7 +57,7 @@ Whether `/pslim-mode` stays on depends on how the user starts it:
 - Option+Enter on Mac or Alt+Enter on Windows, or Use as Mode from the skill entry, makes it a Custom Mode. It stays in context every turn until the user exits the mode, and it stays out of casual turns.
 - Cursor's docs list Custom Modes in the Agents Window and the CLI. Elsewhere, start each new task with `/pslim-mode`.
 
-Link [Cursor's skills docs](https://cursor.com/docs/skills) when this comes up. Mid-chat, "new task" makes the mode match a fresh playbook. `/pslim-mode` already uses `pslim-agent` for the subagents its playbook steps spawn. To get the same style from a subagent of your own, spawn it with `subagent_type: "pslim-agent"`.
+Link [Cursor's skills docs](https://cursor.com/docs/skills) when this comes up. Mid-chat, "new task" makes the mode match a fresh playbook. `/pslim-mode` already uses `pslim-agent` for the subagents its playbook steps spawn. To get the same style from a subagent of your own, spawn it as a `pslim-agent`.
 
 ## Pick a skill
 
@@ -128,7 +128,7 @@ Playbooks are step lists inside `/pslim-mode`, not skills, so they have no slash
 - "full autopilot on this queue" runs Autopilot-full. "autopilot, don't merge" runs Autopilot-stack.
 - "run the eval playbook" runs Eval.
 
-Without `/pslim-mode`, a phrase such as "babysit this pr" can start Cursor's own skill for the same job instead. The Playbooks section of [`pslim-mode`](../pslim-mode/SKILL.md) lists every playbook. [Guide page 6](https://github.com/shahrin014/pstack-slim/blob/main/docs/guide/06-verify-and-ship.md) covers opening, babysitting, and landing a PR.
+Without `/pslim-mode`, a phrase such as "babysit this pr" can start the harness's own skill for the same job instead. The Playbooks section of [`pslim-mode`](../pslim-mode/SKILL.md) lists every playbook. [Guide page 6](https://github.com/shahrin014/pstack-slim/blob/main/docs/guide/06-verify-and-ship.md) covers opening, babysitting, and landing a PR.
 
 pstack has no planning skill. Cursor's Plan Mode works alongside it. For work that spans phases or stacked PRs, asking `/pslim-mode` for a plan runs the [Multi-phase plan playbook](../pslim-mode/playbooks/multi-phase-plan.md), which writes the plan and doesn't implement it. For a design question, the Prototype playbook or `/architect` settles it in code first.
 
