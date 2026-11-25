@@ -9,7 +9,7 @@ Read this before changing anything. It explains what this repository is and what
 Three things are deliberately different from upstream:
 
 1. **Names.** `poteto-mode`, `poteto-help`, and `poteto-agent` are `pslim-mode`, `pslim-help`, and `pslim-agent` here, so the fork's commands do not collide with upstream pstack. Do not restore the old names.
-2. **Harness.** Upstream is written for Cursor. Here the skills target any coding agent that reads `SKILL.md` skills, with OpenCode as the primary target and Claude Code as a second adapter. Cursor-only tool names, paths, and features belong in `docs/harness/`, never in a skill.
+2. **Harness.** Upstream is written for Cursor. Here the skills target any coding agent that reads `SKILL.md` skills, with OpenCode as the primary target and Claude Code as a second adapter. Cursor-only tool names, paths, and features are moving out of the skills into `docs/harness/`; do not add new ones.
 3. **Packaging.** The Cursor plugin manifest (`.cursor-plugin/`) is removed. Skills install standalone with `npx skills add shahrin014/pstack-slim -a <agent>`. `agents/pslim-agent.md` is installed separately, because the skills CLI ships skills only; that install also rewrites its Cursor `model:` and `is_background` fields.
 
 The author's name, handle, and bio stay as written (`poteto`, `https://x.com/poteto`, "at Cursor"). This is a fork, not a rebrand.
@@ -43,7 +43,7 @@ git commit
 git update-ref refs/upstream/pstack "$snap"
 ```
 
-Moving the baseline only after the adapted merge commits keeps the next sync's merge base correct. The merge conflicts wherever upstream edited a path this fork renamed (`poteto-*` upstream, `pslim-*` here): take upstream's content at the `pslim-*` path, then re-apply the rules below.
+Moving the baseline only after the adapted merge commits keeps the next sync's merge base correct. Renames are followed automatically, so an edit to a file this fork renamed lands in the `pslim-*` copy. Conflicts appear only where upstream and this fork changed the same lines: take upstream's intent into the `pslim-*` path, then re-apply the rules below.
 
 `git subtree pull --prefix=pstack` does not apply, because the subtree sits at this repo's root. A plain `git merge upstream/main` would bring in every sibling plugin. `git merge -s subtree` cannot help either, because this history comes from a subtree split and shares no ancestors with upstream.
 
@@ -60,13 +60,13 @@ Before any snapshot sync has happened, the baseline is the end of the imported u
 
 Upstream changes arrive written for Cursor. Before committing a merge, walk this list over the diff:
 
-1. **Tool names become operations.** No `Task`, `subagent_type`, `generalPurpose`, `readonly`, `run_in_background`, `environment: "cloud"`, `cloud_base_branch`, `file_attachments`, or `AskQuestion` in `skills/`, `agents/`, or `README.md`. Say spawn a subagent, read-only, in the background, isolated checkout, structured-choice question. Map each operation in `docs/harness/*.md`.
-2. **Model slugs stay in `skills/setup-pstack/`.** Everywhere else uses role keys or model names (Opus 5.5, Fable 5.2, Gemini 4 Neon) and says "the harness's top reasoning level" instead of `xhigh`.
-3. **Paths get a harness-neutral home.** `~/.cursor/rules/pstack-models.mdc` is the one Cursor path still in the skills; when it moves, update every skill that reads it. `.cursor/skills/` becomes the harness's skills root. Transcript locations come from the harness adapter.
+1. **Tool names become operations.** No `Task`, `subagent_type`, `generalPurpose`, `readonly`, `run_in_background`, `environment: "cloud"`, `cloud_base_branch`, `file_attachments`, or `AskQuestion` in skill instructions, `agents/`, or `README.md` (TypeScript's `readonly` fields under `scripts/` are fine). Say spawn a subagent, read-only, in the background, isolated checkout, structured-choice question. Map each operation in `docs/harness/*.md`.
+2. **Model slugs stay in `skills/setup-pstack/` and the pinned default in `agents/pslim-agent.md`.** Everywhere else uses role keys or model names (Opus 5.5, Fable 5.2, Gemini 4 Neon) and says "the harness's top reasoning level" instead of `xhigh`. Installers that reject Cursor slugs strip the agent's `model:` line.
+3. **Paths get a harness-neutral home.** Three Cursor path families are still in the skills: the model rule (`~/.cursor/rules/pstack-models.mdc`), the skills roots (`.cursor/skills/`, `~/.cursor/skills/`, `plugins/cache/`), and transcripts (`~/.cursor/projects/<slug>/agent-transcripts/`). When one moves, update every skill that reads it; until then, add no more.
 4. **Cursor-only features get a capability line.** Bugbot, Automations, Projects and cloud agents, Custom Modes, and `/loop` do not exist everywhere. Keep that behaviour behind the existing `Skipped in <harness>: <step>. <reason>.` convention.
 5. **Preserve what is genuinely Cursor's.** Product names, `cursor.com` and `api2.cursor.sh` URLs, `.cursor/...` paths that name real Cursor files, `endCursor` identifiers in `scripts/watch-pr/`, and the author's bio. Never blind-replace `cursor`.
 6. **Docs links in skills are absolute.** Skills install outside this repo, so repo-relative links (`../../docs/guide/...`) become `https://github.com/shahrin014/pstack-slim/blob/main/...`.
-7. **Update `docs/harness/`.** Every harness-specific mapping lives there. When a change adds a tool-dependent step, add its row for each supported harness.
+7. **Update `docs/harness/`.** Every harness-specific mapping lives there. When a change adds a tool-dependent step, add its row for each supported harness. Supported harnesses today: OpenCode (primary; its adapter is still missing), Claude Code (`docs/harness/claude-code.md`), and Cursor as the upstream reference.
 
 Commit the sync and the adaptation together on `main`, with the upstream commit named in the message:
 
