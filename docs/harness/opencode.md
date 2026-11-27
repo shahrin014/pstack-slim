@@ -50,7 +50,7 @@ Point its fallback skill search at the installed skills root (`~/.config/opencod
 
 There is no `~/.cursor/rules/` equivalent. OpenCode reads `AGENTS.md` from the project, `~/.config/opencode/AGENTS.md` globally, and any paths listed in the `instructions` array.
 
-`/setup-pstack` does not apply. It enumerates Cursor's `Task` slugs and writes an `.mdc` rule. Skip it, and set `model:` on `pslim-agent` and on any other agent you create.
+`/setup-pstack` has no rule file to write. Its steps 1-5 build and spell the per-role rule, so write one `Skipped in OpenCode: the model rule. There is no rules file to write.` line and go on. Step 6 does apply: it writes `~/.config/opencode/agents/pslim.md`, a `primary` agent whose body loads `pslim-mode` by id, and sets `"default_agent": "pslim"` in `~/.config/opencode/opencode.json(c)` without touching the other keys. New sessions then start in that agent; a session that already stored another agent keeps it. Role models are not written, so set `model:` on `pslim-agent`, on `pslim`, and on any other agent with the Models table above.
 
 ## Transcripts
 
