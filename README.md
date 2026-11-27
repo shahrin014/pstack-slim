@@ -47,7 +47,7 @@ that installs the skills. opencode loads them by id, so ask for `@pslim-mode` wh
 
 two steps:
 
-1. run [`/setup-pstack`](./skills/setup-pstack/SKILL.md), pick a reasoning budget, and choose which models you want. on opencode, skip it and set the `pslim-agent` model yourself, as the setup page explains.
+1. run [`/setup-pstack`](./skills/setup-pstack/SKILL.md), pick a reasoning budget, and choose which models you want. on opencode it skips the rule and makes `pslim` your default agent instead, as the setup page explains.
 2. use [`/pslim-mode`](./skills/pslim-mode/SKILL.md) whenever you're doing anything that requires rigor.
 
 new here? the [pstack guide](./docs/guide/README.md) walks you through a first real task, from setup and prompting through verification and overnight runs. stuck, or unsure which skill fits? ask [`/pslim-help`](./skills/pslim-help/SKILL.md).

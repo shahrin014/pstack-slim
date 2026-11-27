@@ -49,7 +49,7 @@ You only override what you care about. A role with no line in the rule keeps the
 
 You might be wondering what happens if you use Auto. Set a role to `inherit-parent` or `auto` and pstack omits the subagent `model` field, so the subagent inherits your parent chat model. Both values mean the same thing, and neither is a model slug. For a panel role the value is a list, and one subagent runs per entry, so the list length sets the panel size. Setup also configures `swarm workers`, the default model for every `/swarm` worker unless a race names a model for each arm.
 
-On OpenCode, `/setup-pstack` does not apply. It writes Cursor's `~/.cursor/rules/pstack-models.mdc` and reasons in Cursor slugs, so set `model: <provider>/<model>#<variant>` on `pslim-agent` yourself, or leave the line off so the subagent inherits the chat's model. Steps that need Cursor-only tooling, such as bugbot, automations, cloud agents, and `/loop`, have no OpenCode equivalent.
+On OpenCode, `/setup-pstack` has no rule file to write, so it skips the model steps and does one thing: it writes `~/.config/opencode/agents/pslim.md`, a primary agent that loads `pslim-mode` by id, and sets `"default_agent": "pslim"` in your global OpenCode config, so new sessions start in the pslim style without typing `@pslim-mode`. The agent keeps the model your session already selected; to pin one, add `model: <provider>/<model>#<variant>` to that file, and set `model:` on `pslim-agent` the same way, or leave both off so they inherit the chat's model. Steps that need Cursor-only tooling, such as bugbot, automations, cloud agents, and `/loop`, have no OpenCode equivalent.
 
 ## Accept the verification offers, or don't
 
